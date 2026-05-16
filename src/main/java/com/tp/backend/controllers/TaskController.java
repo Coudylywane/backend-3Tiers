@@ -28,6 +28,11 @@ public class TaskController {
         this.taskRepository = taskRepository;
     }
 
+    @GetMapping
+    public List<Task> getAll() {
+        return taskRepository.findAll();
+    }
+
 
     @PostMapping
     public ResponseEntity<Task> create(@Valid @RequestBody Task input) {
