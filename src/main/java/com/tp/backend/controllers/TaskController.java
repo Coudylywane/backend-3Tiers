@@ -63,4 +63,11 @@ public class TaskController {
         taskRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Task> getById(@PathVariable Long id) {
+        Optional<Task> task = taskRepository.findById(id);
+        return task.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
