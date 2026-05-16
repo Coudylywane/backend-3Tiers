@@ -42,6 +42,17 @@ public class TaskController {
     }
 
 
-
+    @PutMapping("/{id}")
+    public ResponseEntity<Task> update(@PathVariable Long id, @Valid @RequestBody Task input) {
+        return taskRepository.findById(id)
+            .map(existing -> {
+                existing.setTitle(input.getTitle());
+                existing.setDescription(input.getDescription());
+                existing.setDone(input.isDone());
+                Task saved = taskRepository.save(existing);
+                return ResponseEntity.ok(saved);
+            })
+            .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
 }
