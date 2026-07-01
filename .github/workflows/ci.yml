@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  IMAGE_NAME: spring-backend
+
 jobs:
   backend:
     runs-on: ubuntu-latest
@@ -28,13 +31,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 4. Build Docker image
+      # 4. Préparer le nom complet de l'image
+      - name: Define Docker image
+        id: image
+        run: |
+          echo "docker_image=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
+      # 5. Build Docker image
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/spring-backend:${{ github.sha }} .
+          docker build -t ${{ steps.image.outputs.docker_image }} .
 
-          
-      # 5. Push Docker image
+      # 6. Push Docker image
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/spring-backend:${{ github.sha }}
+          docker push ${{ steps.image.outputs.docker_image }}
